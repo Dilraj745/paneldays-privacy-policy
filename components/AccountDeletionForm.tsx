@@ -37,9 +37,9 @@ export default function AccountDeletionForm() {
       `Reason for Deletion: ${reason}\n` +
       `Application: PanelDays (com.paneldays.app)\n` +
       `Platform: Android / Google Play Store\n` +
-      `Request Date: ${new Date().toISOString().split("T")[0]}\n\n` +
+      `Submission Date: ${new Date().toISOString().split("T")[0]}\n\n` +
       `DECLARATION:\n` +
-      `I formally request the permanent deletion of my registered PanelDays account and all associated personal data from Clerk authentication directories and remote servers.\n`
+      `I formally request the manual deletion of my registered PanelDays user account and associated identity records from Clerk authentication directories.\n`
     );
 
     const mailtoUrl = `mailto:paneldays@gmail.com?subject=${emailSubject}&body=${emailBody}`;
@@ -54,13 +54,13 @@ export default function AccountDeletionForm() {
       <div className="border-b border-[#E8DFD8] pb-5 mb-6">
         <div className="flex items-center space-x-2 text-[#9E1B22] font-semibold text-xs uppercase tracking-wider mb-1">
           <span className="w-2 h-2 rounded-full bg-[#9E1B22]" />
-          <span>Web Request Option</span>
+          <span>Manual Email-Based Request</span>
         </div>
         <h3 className="font-serif text-2xl font-bold text-[#1A1816]">
-          Web-Based Account Deletion Request
+          Request Account Deletion via Email
         </h3>
         <p className="text-sm text-[#6B635B] mt-1.5 leading-relaxed">
-          If you have uninstalled the application or cannot access your mobile device, submit your registered account details below to request manual account purge.
+          If you have uninstalled the application or cannot access your mobile device, use this form to prepare a formal deletion request. Because this website operates without an automated backend deletion API, all web-initiated deletion requests are reviewed and fulfilled manually by our support team.
         </p>
       </div>
 
@@ -73,11 +73,12 @@ export default function AccountDeletionForm() {
             Email Client Opened with Your Request
           </div>
           <p className="m-0 leading-relaxed text-xs sm:text-sm">
-            Your default email client has been opened with your formal account deletion request. Please click <strong>Send</strong> in your mail application to submit it to <strong>paneldays@gmail.com</strong>.
+            Your default email client has been opened with your formal account deletion request. Please review and click <strong>Send</strong> in your mail application to deliver it to <strong>paneldays@gmail.com</strong>.
           </p>
-          <p className="text-xs text-[#8C827A] mt-2 mb-0">
-            <strong>Important Note:</strong> Opening or drafting an email does not instantly delete your account. Our support team verifies ownership and processes deletion from our authentication directories within <strong>30 days</strong> in accordance with Google Play requirements.
-          </p>
+          <div className="mt-3 p-3 rounded-lg bg-white border border-[#E8DFD8] text-xs text-[#554F49] space-y-1">
+            <div><strong>Processing Notice:</strong> Drafting or opening this email does not automatically delete your account online.</div>
+            <div><strong>Our Fulfillment Commitment:</strong> Our team commits to verifying account ownership and manually completing deletion of your registered Clerk user record within <strong>30 calendar days</strong> of receiving your email request.</div>
+          </div>
         </div>
       )}
 
@@ -145,7 +146,7 @@ export default function AccountDeletionForm() {
               className="mt-1 h-4 w-4 rounded border-[#D9CEC5] text-[#9E1B22] focus:ring-[#9E1B22]"
             />
             <span className="text-xs text-[#4A453F] leading-relaxed">
-              I understand that account deletion is <strong>permanent and irreversible</strong>. I acknowledge that deleting my PanelDays account does not automatically cancel any active recurring subscriptions managed by Google Play, and I am responsible for managing Google Play subscriptions separately.
+              I understand that account deletion is <strong>permanent and irreversible</strong>. I acknowledge that submitting this form creates an email request to be processed manually by the PanelDays team, and that deleting my account does not cancel active recurring subscriptions managed separately by Google Play.
             </span>
           </label>
         </div>

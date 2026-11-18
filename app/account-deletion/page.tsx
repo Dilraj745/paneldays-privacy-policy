@@ -15,7 +15,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Delete Your PanelDays Account — Official Removal Guide",
     description:
-      "Permanent account and data removal instructions for PanelDays (com.paneldays.app). Complete in-app steps and web-based request options.",
+      "Account and data removal instructions for PanelDays (com.paneldays.app). Complete in-app steps and email-based deletion request process.",
     url: "/account-deletion",
   },
 };
@@ -54,13 +54,13 @@ export default function AccountDeletionPage() {
         <section className="bg-white p-6 sm:p-10 rounded-2xl border border-[#E8DFD8] shadow-sm">
           <div className="border-b border-[#E8DFD8] pb-4 mb-6">
             <span className="text-xs font-bold uppercase tracking-wider text-[#9E1B22]">
-              Recommended &amp; Instant Method
+              In-App Deletion Process
             </span>
             <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1816] mt-1">
-              How to Delete Your Account in the PanelDays Mobile App
+              How Account Deletion Operates in the PanelDays Mobile App
             </h2>
             <p className="text-sm text-[#6B635B] mt-1">
-              If you have the PanelDays Android application installed, you can trigger immediate account deletion directly in the app.
+              If you have the PanelDays Android application installed, you can trigger account deletion directly in the app.
             </p>
           </div>
 
@@ -116,7 +116,7 @@ export default function AccountDeletionPage() {
                   Confirm Request
                 </h3>
                 <p className="text-xs text-[#6B635B] leading-relaxed">
-                  Type <strong className="font-mono text-[#9E1B22]">DELETE</strong>. If prompted, re-verify your password for security.
+                  Type <strong className="font-mono text-[#9E1B22]">DELETE</strong>. If your last sign-in was more than 15 minutes ago, re-verify your password.
                 </p>
               </div>
             </div>
@@ -127,10 +127,10 @@ export default function AccountDeletionPage() {
                   Step 5
                 </span>
                 <h3 className="font-serif font-bold text-base text-[#9E1B22] mb-1">
-                  Account Purge
+                  Data Purge &amp; Remote Sync
                 </h3>
                 <p className="text-xs text-[#6B635B] leading-relaxed">
-                  All local projects, custom stickers, vault keys, and session credentials are permanently purged.
+                  All local projects, stickers, vault keys, and session tokens are immediately wiped. If Clerk self-deletion is enabled, remote user deletion is executed.
                 </p>
               </div>
             </div>
@@ -146,20 +146,36 @@ export default function AccountDeletionPage() {
                 🗑️
               </div>
               <h3 className="font-serif text-xl font-bold text-[#1A1816]">
-                What Data is Permanently Deleted?
+                Data Deletion Architecture &amp; Scope
               </h3>
             </div>
             <p className="text-sm text-[#4A453F] leading-relaxed">
-              Upon completing account deletion, the following data categories are irreversibly erased:
+              To ensure transparency, our account deletion architecture distinguishes between local data removal and remote identity deletion:
             </p>
-            <ul className="text-sm text-[#4A453F] space-y-2 list-disc ml-5">
-              <li><strong>Local User Profile:</strong> Display name, profile photo preferences, and app configuration (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_user_profile_v1</code>).</li>
-              <li><strong>Scrapbook Projects &amp; Pages:</strong> All user-created memory books, layout configurations, and text journals (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_books_v1</code>).</li>
-              <li><strong>Custom Stickers &amp; Designs:</strong> All user-generated stickers, stamps, and layout templates (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_custom_stickers_v1</code>).</li>
-              <li><strong>Private Vault Data:</strong> Vault albums, PIN hashes, and Android KeyStore master encryption keys.</li>
-              <li><strong>Local Authentication Session:</strong> Auth tokens stored in encrypted secure storage (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">paneldays_auth_token_v1</code>).</li>
-              <li><strong>Remote Authentication Record:</strong> When verified, your registered identity is permanently deleted from Clerk user directories.</li>
-            </ul>
+
+            <div className="space-y-3 text-xs sm:text-sm text-[#4A453F]">
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
+                <strong className="text-[#1A1816] block font-semibold mb-1">1. Immediate Local Data Deletion (Verified)</strong>
+                Executing the in-app deletion instantly purges all user data residing on your physical device:
+                <ul className="mt-1.5 space-y-1 list-disc ml-4 text-xs text-[#554F49]">
+                  <li>Local user profile preferences (<code className="text-[#9E1B22] font-mono">@paneldays_user_profile_v1</code>)</li>
+                  <li>All user-created scrapbook books &amp; page designs (<code className="text-[#9E1B22] font-mono">@paneldays_books_v1</code>)</li>
+                  <li>Custom stickers and template favorites (<code className="text-[#9E1B22] font-mono">@paneldays_custom_stickers_v1</code>)</li>
+                  <li>Private Vault albums, salted SHA-256 PIN hashes, and Android KeyStore master keys</li>
+                  <li>Authentication session tokens (<code className="text-[#9E1B22] font-mono">paneldays_auth_token_v1</code>)</li>
+                </ul>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
+                <strong className="text-[#1A1816] block font-semibold mb-1">2. Remote Clerk Account Deletion</strong>
+                When you initiate deletion inside the app, the client attempts to delete the remote user account through Clerk&rsquo;s SDK (<code className="text-[#9E1B22] font-mono">user.delete()</code>) when the Clerk self-deletion setting (<code className="text-[#9E1B22] font-mono">deleteSelfEnabled</code>) is enabled for your account. Because a custom remote backend (<code className="text-[#9E1B22] font-mono">EXPO_PUBLIC_AUTH_API_URL</code>) is not currently configured in the production client, remote deletion relies on this Clerk capability or manual fulfillment.
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
+                <strong className="text-[#1A1816] block font-semibold mb-1">3. Manual Email-Based Deletion Requests</strong>
+                If you cannot access the mobile application, or if remote deletion cannot complete on-device, you can submit a manual deletion request below. Our team manually verifies account ownership and deletes the user record directly from our Clerk directory.
+              </div>
+            </div>
           </div>
 
           {/* Subscriptions & Google Play Billing */}
@@ -204,13 +220,13 @@ export default function AccountDeletionPage() {
           </h4>
           <ul className="space-y-1.5 list-disc ml-5 text-xs sm:text-sm">
             <li>
-              <strong>Account Deletion vs. Uninstalling:</strong> Uninstalling the application from your phone removes local cached data but does not formally remove your registered account identity from remote Clerk directories. Use the in-app deletion button or the web request form below to ensure complete removal.
+              <strong>Account Deletion vs. Uninstalling:</strong> Uninstalling the application removes locally stored app data from that device but does not delete your registered user identity from Clerk. To ensure full account removal, use the in-app deletion option or submit an email request.
             </li>
             <li>
-              <strong>Exported Files:</strong> Any scrapbook packages (<code className="text-xs bg-white px-1 py-0.5 rounded text-[#9E1B22] font-mono">.paneldays</code>), videos, or images that you previously exported to your device gallery or external storage will remain on your device unless manually deleted by you through your Android file manager.
+              <strong>Exported Packages:</strong> Any scrapbook package files (<code className="text-xs bg-white px-1 py-0.5 rounded text-[#9E1B22] font-mono">.paneldays</code>), videos, or images previously exported to your device gallery or external storage remain on your device unless manually deleted by you through your Android file manager.
             </li>
             <li>
-              <strong>Legally Required Records:</strong> We do not retain personal content after deletion. However, financial transaction receipt records are retained by Google Play in accordance with applicable tax and commercial accounting regulations.
+              <strong>Financial Transaction Records:</strong> Financial records and purchase receipts are retained independently by Google Play in accordance with statutory accounting and tax regulations.
             </li>
           </ul>
         </section>

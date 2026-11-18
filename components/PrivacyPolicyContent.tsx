@@ -494,26 +494,35 @@ export default function PrivacyPolicyContent() {
           <li>Confirm permanent deletion.</li>
         </ol>
 
-        <div className="p-4 rounded-xl bg-white border border-[#E8DFD8] mb-4 text-sm">
+        <div className="p-4 rounded-xl bg-white border border-[#E8DFD8] mb-4 text-sm space-y-3">
           <strong className="text-[#1A1816] block font-serif text-base mb-1">
-            Immediate In-App Purge Scope
+            Data Deletion Scope &amp; Processing Conditions
           </strong>
-          Executing the in-app deletion instantly and irreversibly wipes:
-          <ul className="mt-2 space-y-1">
-            <li>Your local user profile configuration (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_user_profile_v1</code>)</li>
-            <li>All user-created scrapbook projects and memory books (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_books_v1</code>)</li>
-            <li>All custom created stickers and designs (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_custom_stickers_v1</code>)</li>
-            <li>All saved custom templates and favorites (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_saved_templates_v1</code>)</li>
-            <li>Private Vault albums, salted PIN hashes, and vault master keys</li>
-            <li>All local authentication tokens and session caches</li>
-          </ul>
+          <div>
+            <span className="font-semibold text-[#1A1816] block mb-1">1. Immediate Local Data Purge (Verified):</span>
+            Executing the in-app deletion immediately and permanently wipes all user data residing on your physical device:
+            <ul className="mt-1.5 space-y-1">
+              <li>Your local user profile configuration (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_user_profile_v1</code>)</li>
+              <li>All user-created scrapbook projects and memory books (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_books_v1</code>)</li>
+              <li>All custom created stickers and designs (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_custom_stickers_v1</code>)</li>
+              <li>All saved custom templates and favorites (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22]">@paneldays_saved_templates_v1</code>)</li>
+              <li>Private Vault albums, salted PIN hashes, and Android KeyStore master keys</li>
+              <li>All local authentication tokens and session caches</li>
+            </ul>
+          </div>
+          <div>
+            <span className="font-semibold text-[#1A1816] block mb-1">2. Remote Clerk Account Deletion:</span>
+            <p className="text-xs text-[#554F49] leading-relaxed m-0">
+              When initiating deletion inside the mobile app, the client attempts to delete the remote user account through Clerk&rsquo;s SDK when self-deletion (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22] font-mono">deleteSelfEnabled</code>) is active on your account. Because a custom remote backend endpoint (<code className="text-xs bg-[#F5EFEB] px-1 py-0.5 rounded text-[#9E1B22] font-mono">EXPO_PUBLIC_AUTH_API_URL</code>) is not currently configured in the production application, remote deletion relies on this Clerk capability or upon manual fulfillment.
+            </p>
+          </div>
         </div>
 
         <h3 className="font-serif text-lg font-bold text-[#1A1816] mt-6 mb-2">
-          Method 2: Email Account Deletion Request (Remote Clerk Identity Purge)
+          Method 2: Manual Email Deletion Request (Remote Clerk Identity Removal)
         </h3>
         <p>
-          If you have uninstalled the application or wish to ensure that your remote registered account record in Clerk is permanently deleted:
+          If you have uninstalled the application, cannot access your mobile device, or wish to ensure that your remote registered account record in Clerk is removed:
         </p>
         <ul>
           <li>
@@ -527,7 +536,7 @@ export default function PrivacyPolicyContent() {
           </li>
         </ul>
         <p className="text-sm text-[#4A453F]">
-          Our team verifies ownership and permanently purges your remote account identity from Clerk within <strong>30 days</strong> of receiving your request. We will reply to your email confirming completion.
+          Our team&rsquo;s commitment is to verify account ownership and manually complete deletion of your registered Clerk user record within <strong>30 calendar days</strong> of receiving your request. We will reply to your email confirming completion.
         </p>
 
         <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8] text-xs text-[#6B635B] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
