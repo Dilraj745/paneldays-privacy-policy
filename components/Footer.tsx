@@ -42,38 +42,45 @@ export default function Footer() {
               <li>
                 <Link
                   href="/privacy-policy"
-                  className="font-medium text-[#9E1B22] hover:underline"
+                  className="font-medium text-[#4A453F] hover:text-[#9E1B22] transition-colors"
                 >
-                  Privacy Policy (Active)
+                  Privacy Policy
                 </Link>
               </li>
               <li>
-                {/* Honest placeholder without fake URL */}
-                <span className="text-[#8C827A] flex items-center">
-                  Account Deletion Webpage
-                  <span className="ml-2 text-[10px] bg-[#E8DFD8] text-[#4A453F] px-1.5 py-0.5 rounded font-mono">
-                    Coming Soon
+                <Link
+                  href="/account-deletion"
+                  className="font-medium text-[#9E1B22] hover:underline flex items-center"
+                >
+                  Account Deletion
+                  <span className="ml-2 text-[10px] bg-[#D1FAE5] text-[#065F46] font-bold px-1.5 py-0.5 rounded border border-[#A7F3D0]">
+                    Google Play
                   </span>
-                </span>
-                <p className="text-[11px] text-[#6B635B] mt-0.5">
-                  Currently handled directly in the app or via email.
-                </p>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#section-16"
+                <Link
+                  href="/contact"
+                  className="font-medium text-[#4A453F] hover:text-[#9E1B22] transition-colors"
+                >
+                  Contact Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/privacy-policy#section-16"
                   className="text-[#6B635B] hover:text-[#9E1B22] transition-colors"
                 >
                   User Privacy Rights
-                </a>
+                </Link>
               </li>
               <li>
-                <a
-                  href="#section-9"
+                <Link
+                  href="/privacy-policy#section-9"
                   className="text-[#6B635B] hover:text-[#9E1B22] transition-colors"
                 >
                   Third-Party Disclosures
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -107,6 +114,14 @@ export default function Footer() {
                 paneldays@gmail.com
               </a>
             </div>
+            <div className="pt-2">
+              <Link
+                href="/contact"
+                className="text-xs font-medium text-[#4A453F] hover:text-[#9E1B22] underline"
+              >
+                Open Contact &amp; Support Page &rarr;
+              </Link>
+            </div>
             <p className="text-xs text-[#8C827A] pt-1">
               Response window: Within 48 business hours.
             </p>
@@ -119,9 +134,11 @@ export default function Footer() {
             &copy; {currentYear} PanelDays. All rights reserved.
           </div>
           <div className="flex items-center space-x-4">
-            <span>Built for Google Play Store compliance</span>
+            <Link href="/privacy-policy" className="hover:underline">Privacy Policy</Link>
             <span>•</span>
-            <span>Local-First Architecture</span>
+            <Link href="/account-deletion" className="hover:underline">Account Deletion</Link>
+            <span>•</span>
+            <Link href="/contact" className="hover:underline">Contact</Link>
           </div>
         </div>
       </div>

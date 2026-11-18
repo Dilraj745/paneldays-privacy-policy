@@ -2,12 +2,18 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export default function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const pathname = usePathname();
+
+  const isPrivacy = pathname === "/privacy-policy" || pathname === "/";
+  const isAccountDeletion = pathname === "/account-deletion";
+  const isContact = pathname === "/contact";
 
   return (
-    <header className="sticky top-0 z-50 bg-[#FAF7F2]/90 backdrop-blur-md border-b border-[#E8DFD8] transition-all">
+    <header className="sticky top-0 z-50 bg-[#FAF7F2]/95 backdrop-blur-md border-b border-[#E8DFD8] transition-all">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20">
           {/* Brand Wordmark */}
@@ -23,42 +29,54 @@ export default function Header() {
                 PanelDays
               </span>
               <span className="text-[11px] font-medium tracking-wider uppercase text-[#6B635B] -mt-1">
-                Official Privacy Documentation
+                Official Privacy &amp; Legal
               </span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-6">
+          <nav className="hidden md:flex items-center space-x-7">
             <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#F5EFEB] text-[#6B635B] border border-[#E8DFD8]">
               <span className="w-2 h-2 rounded-full bg-emerald-500 mr-1.5 animate-pulse"></span>
-              Android App • v1.0.0
+              Android • v1.0.0
             </span>
 
             <Link
               href="/privacy-policy"
-              className="text-sm font-semibold text-[#9E1B22] border-b-2 border-[#9E1B22] pb-0.5"
+              className={`text-sm font-semibold transition-colors pb-0.5 ${
+                isPrivacy
+                  ? "text-[#9E1B22] border-b-2 border-[#9E1B22]"
+                  : "text-[#4A453F] hover:text-[#1A1816]"
+              }`}
             >
               Privacy Policy
             </Link>
 
-            <a
-              href="#toc"
-              className="text-sm font-medium text-[#6B635B] hover:text-[#1A1816] transition-colors"
+            <Link
+              href="/privacy-policy#toc"
+              className="text-sm font-medium text-[#4A453F] hover:text-[#9E1B22] transition-colors"
             >
               Sections
-            </a>
+            </Link>
 
-            <a
-              href="#section-14"
-              className="text-sm font-medium text-[#6B635B] hover:text-[#1A1816] transition-colors"
+            <Link
+              href="/account-deletion"
+              className={`text-sm font-semibold transition-colors pb-0.5 ${
+                isAccountDeletion
+                  ? "text-[#9E1B22] border-b-2 border-[#9E1B22]"
+                  : "text-[#4A453F] hover:text-[#1A1816]"
+              }`}
             >
               Account Deletion
-            </a>
+            </Link>
 
-            <a
-              href="mailto:paneldays@gmail.com"
-              className="inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium text-white bg-[#9E1B22] hover:bg-[#8B1E22] shadow-sm hover:shadow transition-all focus:outline-none focus:ring-2 focus:ring-[#9E1B22] focus:ring-offset-2"
+            <Link
+              href="/contact"
+              className={`inline-flex items-center justify-center px-4 py-2 rounded-lg text-sm font-medium shadow-sm transition-all focus:outline-none focus:ring-2 focus:ring-[#9E1B22] focus:ring-offset-2 ${
+                isContact
+                  ? "bg-[#8B1E22] text-white"
+                  : "text-white bg-[#9E1B22] hover:bg-[#8B1E22] hover:shadow"
+              }`}
             >
               <svg
                 className="w-4 h-4 mr-1.5"
@@ -74,17 +92,17 @@ export default function Header() {
                 />
               </svg>
               Contact Us
-            </a>
+            </Link>
           </nav>
 
           {/* Mobile Menu Button */}
           <div className="flex md:hidden items-center space-x-2">
-            <a
-              href="mailto:paneldays@gmail.com"
+            <Link
+              href="/contact"
               className="px-3 py-1.5 text-xs font-medium text-white bg-[#9E1B22] rounded-md"
             >
               Contact
-            </a>
+            </Link>
             <button
               type="button"
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -106,8 +124,8 @@ export default function Header() {
 
         {/* Mobile Dropdown Menu */}
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-[#E8DFD8] bg-[#FAF7F2] space-y-3">
-            <div className="px-2 pb-2">
+          <div className="md:hidden py-4 border-t border-[#E8DFD8] bg-[#FAF7F2] space-y-2">
+            <div className="px-3 pb-2">
               <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-[#F5EFEB] text-[#6B635B] border border-[#E8DFD8]">
                 Package: com.paneldays.app
               </span>
@@ -115,31 +133,43 @@ export default function Header() {
             <Link
               href="/privacy-policy"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-semibold text-[#9E1B22] bg-[#FDF2F2]"
+              className={`block px-3 py-2.5 rounded-lg text-base font-semibold ${
+                isPrivacy
+                  ? "text-[#9E1B22] bg-[#FDF2F2]"
+                  : "text-[#2C2926] hover:bg-[#F5EFEB]"
+              }`}
             >
               Privacy Policy
             </Link>
-            <a
-              href="#toc"
+            <Link
+              href="/privacy-policy#toc"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-[#2C2926] hover:bg-[#F5EFEB]"
+              className="block px-3 py-2.5 rounded-lg text-base font-medium text-[#2C2926] hover:bg-[#F5EFEB]"
             >
-              Table of Contents
-            </a>
-            <a
-              href="#section-14"
+              Table of Contents (19 Sections)
+            </Link>
+            <Link
+              href="/account-deletion"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-[#2C2926] hover:bg-[#F5EFEB]"
+              className={`block px-3 py-2.5 rounded-lg text-base font-semibold ${
+                isAccountDeletion
+                  ? "text-[#9E1B22] bg-[#FDF2F2]"
+                  : "text-[#2C2926] hover:bg-[#F5EFEB]"
+              }`}
             >
               Account Deletion
-            </a>
-            <a
-              href="mailto:paneldays@gmail.com"
+            </Link>
+            <Link
+              href="/contact"
               onClick={() => setMobileMenuOpen(false)}
-              className="block px-3 py-2 rounded-md text-base font-medium text-[#9E1B22] hover:bg-[#FDF2F2]"
+              className={`block px-3 py-2.5 rounded-lg text-base font-semibold ${
+                isContact
+                  ? "text-[#9E1B22] bg-[#FDF2F2]"
+                  : "text-[#9E1B22] hover:bg-[#FDF2F2]"
+              }`}
             >
-              Email Support: paneldays@gmail.com
-            </a>
+              Contact Us &amp; Support
+            </Link>
           </div>
         )}
       </div>

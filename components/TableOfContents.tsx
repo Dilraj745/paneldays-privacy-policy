@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 
 export interface TocItem {
   id: string;
@@ -30,33 +30,153 @@ export const TOC_SECTIONS: TocItem[] = [
   { id: "section-19", number: 19, title: "Contact Information" },
 ];
 
-export default function TableOfContents() {
+interface TableOfContentsProps {
+  variant?: "sidebar" | "mobile";
+}
+
+export default function TableOfContents({ variant = "sidebar" }: TableOfContentsProps) {
   const [activeId, setActiveId] = useState<string>("section-1");
+  const [mobileExpanded, setMobileExpanded] = useState<boolean>(false);
 
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY + 140;
+  // Accurate active section calculation using getBoundingClientRect
+  const updateActiveSection = useCallback(() => {
+    // 140px accounts for sticky header (80px) + 60px viewport breathing room
+    const triggerOffset = 150;
 
-      for (let i = TOC_SECTIONS.length - 1; i >= 0; i--) {
-        const item = TOC_SECTIONS[i];
-        const el = document.getElementById(item.id);
-        if (el && el.offsetTop <= scrollPosition) {
+    for (let i = TOC_SECTIONS.length - 1; i >= 0; i--) {
+      const item = TOC_SECTIONS[i];
+      const el = document.getElementById(item.id);
+      if (el) {
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= triggerOffset) {
           setActiveId(item.id);
-          break;
+          return;
+        }
+      }
+    }
+    // Fallback to section 1 when above the first trigger
+    setActiveId("section-1");
+  }, []);
+
+  // Handle direct hash navigation on initial page load, browser refresh, or hash change
+  useEffect(() => {
+    const handleHashNavigation = () => {
+      if (typeof window !== "undefined" && window.location.hash) {
+        const hash = window.location.hash.replace("#", "");
+        const target = document.getElementById(hash);
+        if (target) {
+          setTimeout(() => {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+            setActiveId(hash);
+          }, 120);
         }
       }
     };
 
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    handleScroll();
-    return () => window.removeEventListener("scroll", handleScroll);
+    handleHashNavigation();
+    window.addEventListener("hashchange", handleHashNavigation);
+    return () => window.removeEventListener("hashchange", handleHashNavigation);
   }, []);
 
+  // Scroll listener
+  useEffect(() => {
+    window.addEventListener("scroll", updateActiveSection, { passive: true });
+    updateActiveSection();
+    return () => window.removeEventListener("scroll", updateActiveSection);
+  }, [updateActiveSection]);
+
+  const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      window.history.pushState(null, "", `#${id}`);
+      setActiveId(id);
+      if (variant === "mobile") {
+        setMobileExpanded(false);
+      }
+    }
+  };
+
+  // Find active item title for mobile summary
+  const activeItem = TOC_SECTIONS.find((s) => s.id === activeId) || TOC_SECTIONS[0];
+
+  // Mobile Accordion Variant
+  if (variant === "mobile") {
+    return (
+      <div className="w-full bg-[#FAF7F2] border border-[#E8DFD8] rounded-xl overflow-hidden shadow-sm">
+        <button
+          type="button"
+          onClick={() => setMobileExpanded(!mobileExpanded)}
+          className="w-full px-4 py-3.5 flex items-center justify-between text-left focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 transition-colors bg-[#FAF7F2] hover:bg-[#F5EFEB]"
+          aria-expanded={mobileExpanded}
+          aria-controls="mobile-toc-list"
+        >
+          <div className="flex items-center space-x-2.5 truncate pr-2">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#9E1B22] flex-shrink-0" />
+            <div className="flex flex-col truncate">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#8C827A]">
+                Table of Contents ({TOC_SECTIONS.length} Sections)
+              </span>
+              <span className="text-xs font-semibold text-[#1A1816] truncate">
+                {activeItem.number.toString().padStart(2, "0")}. {activeItem.title}
+              </span>
+            </div>
+          </div>
+          <span className="flex-shrink-0 text-xs font-semibold text-[#9E1B22] flex items-center bg-white px-2.5 py-1 rounded-md border border-[#E8DFD8]">
+            {mobileExpanded ? "Hide" : "Jump To"}
+            <svg
+              className={`w-3.5 h-3.5 ml-1 transition-transform ${mobileExpanded ? "rotate-180" : ""}`}
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+            </svg>
+          </span>
+        </button>
+
+        {mobileExpanded && (
+          <div
+            id="mobile-toc-list"
+            className="p-3 border-t border-[#E8DFD8] bg-white max-h-80 overflow-y-auto space-y-1"
+          >
+            {TOC_SECTIONS.map((item) => {
+              const isActive = activeId === item.id;
+              return (
+                <a
+                  key={item.id}
+                  href={`#${item.id}`}
+                  onClick={(e) => scrollToSection(e, item.id)}
+                  className={`flex items-center py-2 px-3 rounded-lg text-xs transition-colors ${
+                    isActive
+                      ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold"
+                      : "text-[#4A453F] hover:bg-[#FAF7F2] hover:text-[#1A1816]"
+                  }`}
+                >
+                  <span
+                    className={`w-6 flex-shrink-0 font-mono text-[11px] ${
+                      isActive ? "text-[#9E1B22] font-bold" : "text-[#B3A89F]"
+                    }`}
+                  >
+                    {item.number.toString().padStart(2, "0")}
+                  </span>
+                  <span className="truncate">{item.title}</span>
+                </a>
+              );
+            })}
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // Desktop Sidebar Variant
   return (
     <nav
       id="toc"
       aria-label="Table of Contents"
-      className="bg-white/80 backdrop-blur-sm border border-[#E8DFD8] rounded-2xl p-5 shadow-sm sticky top-28"
+      className="bg-white/90 backdrop-blur-sm border border-[#E8DFD8] rounded-2xl p-5 shadow-sm sticky top-28"
     >
       <div className="flex items-center justify-between pb-3 mb-3 border-b border-[#E8DFD8]">
         <div className="flex items-center space-x-2">
@@ -75,9 +195,10 @@ export default function TableOfContents() {
             <a
               key={item.id}
               href={`#${item.id}`}
+              onClick={(e) => scrollToSection(e, item.id)}
               className={`group flex items-start py-1.5 px-2.5 rounded-lg text-xs leading-snug transition-all ${
                 isActive
-                  ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold"
+                  ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold border-l-2 border-[#9E1B22]"
                   : "text-[#6B635B] hover:text-[#1A1816] hover:bg-[#FAF7F2]"
               }`}
             >
@@ -98,6 +219,11 @@ export default function TableOfContents() {
         <span>Click any section to jump</span>
         <a
           href="#top"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: "smooth" });
+            window.history.pushState(null, "", "#top");
+          }}
           className="text-[#9E1B22] hover:underline font-medium inline-flex items-center"
         >
           Top ↑

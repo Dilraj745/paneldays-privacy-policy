@@ -39,6 +39,10 @@ This repository contains the standalone, official Privacy Policy website for **P
 ```text
 D:\privacypolicy\
 ├── app/
+│   ├── account-deletion/
+│   │   └── page.tsx             # Dedicated Google Play Account Deletion page (/account-deletion)
+│   ├── contact/
+│   │   └── page.tsx             # Official Contact Us page (/contact)
 │   ├── globals.css              # Cream/Cherry-red/Gold palette, smooth scrolling, print styles
 │   ├── layout.tsx               # Root layout, Google Fonts, SEO metadata, OpenGraph tags
 │   ├── not-found.tsx            # Accessible 404 page redirecting to /privacy-policy
@@ -46,11 +50,13 @@ D:\privacypolicy\
 │   └── privacy-policy/
 │       └── page.tsx             # Primary canonical route (/privacy-policy)
 ├── components/
-│   ├── Footer.tsx               # Branding, email, links, honest Account Deletion placeholder
-│   ├── Header.tsx               # Responsive header, brand wordmark, mobile navigation
+│   ├── AccountDeletionForm.tsx  # Interactive web-based deletion request with mailto dispatch
+│   ├── ContactForm.tsx          # Multi-category contact form with prefilled mailto dispatch
+│   ├── Footer.tsx               # Branding, email, links to Privacy Policy, Deletion, Contact
+│   ├── Header.tsx               # Responsive header, active route states, mobile navigation
 │   ├── PolicyHero.tsx           # Hero section, compliance badges, metadata, core guarantees
 │   ├── PrivacyPolicyContent.tsx # Authoritative legal documentation across all 19 sections
-│   └── TableOfContents.tsx      # Sticky sidebar & mobile quick-jump table of contents
+│   └── TableOfContents.tsx      # Dual-mode desktop sidebar & mobile collapsible accordion TOC
 ├── public/                      # Static assets and icons
 ├── next.config.ts               # Next.js build and Turbopack configuration
 ├── package.json                 # Project dependencies and build scripts

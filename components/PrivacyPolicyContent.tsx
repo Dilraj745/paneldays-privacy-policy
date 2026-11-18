@@ -4,7 +4,7 @@ export default function PrivacyPolicyContent() {
   return (
     <article className="prose prose-stone max-w-none space-y-16 text-[#2C2926]">
       {/* SECTION 1 */}
-      <section id="section-1" className="legal-section pt-2">
+      <section id="section-1" className="legal-section scroll-mt-28 pt-2">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             01
@@ -26,7 +26,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 2 */}
-      <section id="section-2" className="legal-section">
+      <section id="section-2" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             02
@@ -86,7 +86,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 3 */}
-      <section id="section-3" className="legal-section">
+      <section id="section-3" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             03
@@ -115,7 +115,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 4 */}
-      <section id="section-4" className="legal-section">
+      <section id="section-4" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             04
@@ -192,7 +192,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 5 */}
-      <section id="section-5" className="legal-section">
+      <section id="section-5" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             05
@@ -221,7 +221,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 6 */}
-      <section id="section-6" className="legal-section">
+      <section id="section-6" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             06
@@ -241,7 +241,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 7 */}
-      <section id="section-7" className="legal-section">
+      <section id="section-7" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             07
@@ -267,7 +267,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 8 */}
-      <section id="section-8" className="legal-section">
+      <section id="section-8" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             08
@@ -293,7 +293,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 9 */}
-      <section id="section-9" className="legal-section">
+      <section id="section-9" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             09
@@ -380,7 +380,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 10 */}
-      <section id="section-10" className="legal-section">
+      <section id="section-10" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             10
@@ -401,7 +401,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 11 */}
-      <section id="section-11" className="legal-section">
+      <section id="section-11" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             11
@@ -422,7 +422,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 12 */}
-      <section id="section-12" className="legal-section">
+      <section id="section-12" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             12
@@ -446,7 +446,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 13 */}
-      <section id="section-13" className="legal-section">
+      <section id="section-13" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             13
@@ -467,7 +467,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 14 */}
-      <section id="section-14" className="legal-section">
+      <section id="section-14" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             14
@@ -530,13 +530,22 @@ export default function PrivacyPolicyContent() {
           Our team verifies ownership and permanently purges your remote account identity from Clerk within <strong>30 days</strong> of receiving your request. We will reply to your email confirming completion.
         </p>
 
-        <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8] text-xs text-[#6B635B]">
-          <strong>Dedicated Web Page Notice:</strong> A dedicated, standalone Account Deletion web page will be launched in accordance with Google Play Store policies. In the interim, all requests submitted via in-app deletion or via email to <code className="font-mono text-[#9E1B22]">paneldays@gmail.com</code> are fully honored.
+        <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8] text-xs text-[#6B635B] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <strong className="text-[#1A1816] font-semibold block sm:inline">Dedicated Web Page Available:</strong>{" "}
+            You can also submit an account deletion request online through our official Google Play–compliant webpage.
+          </div>
+          <a
+            href="/account-deletion"
+            className="inline-flex items-center text-xs font-bold text-[#9E1B22] hover:underline flex-shrink-0"
+          >
+            Open Account Deletion Page &rarr;
+          </a>
         </div>
       </section>
 
       {/* SECTION 15 */}
-      <section id="section-15" className="legal-section">
+      <section id="section-15" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             15
@@ -557,7 +566,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 16 */}
-      <section id="section-16" className="legal-section">
+      <section id="section-16" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             16
@@ -609,7 +618,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 17 */}
-      <section id="section-17" className="legal-section">
+      <section id="section-17" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             17
@@ -629,7 +638,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 18 */}
-      <section id="section-18" className="legal-section">
+      <section id="section-18" className="legal-section scroll-mt-28">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             18
@@ -649,7 +658,7 @@ export default function PrivacyPolicyContent() {
       </section>
 
       {/* SECTION 19 */}
-      <section id="section-19" className="legal-section pb-8">
+      <section id="section-19" className="legal-section scroll-mt-28 pb-8">
         <div className="flex items-center space-x-3 mb-4">
           <span className="flex items-center justify-center w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] font-serif font-bold text-sm border border-[#E8DFD8]">
             19
