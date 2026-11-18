@@ -3,6 +3,11 @@ import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import ContactForm from "@/components/ContactForm";
+import {
+  EmailIcon,
+  SecurityShieldIcon,
+  TrashIcon,
+} from "@/components/Icons";
 
 export const metadata: Metadata = {
   title: "Contact PanelDays — Official Support & Privacy Team",
@@ -68,7 +73,7 @@ export default function ContactPage() {
             >
               <div className="flex items-start space-x-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FDF2F2] text-[#9E1B22] flex items-center justify-center font-bold text-lg flex-shrink-0 group-hover:scale-105 transition-transform">
-                  💬
+                  <EmailIcon className="w-5 h-5 text-[#9E1B22]" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -96,7 +101,7 @@ export default function ContactPage() {
             >
               <div className="flex items-start space-x-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FAF4E8] text-[#C5A059] flex items-center justify-center font-bold text-lg flex-shrink-0 group-hover:scale-105 transition-transform">
-                  🛡️
+                  <SecurityShieldIcon className="w-5 h-5 text-[#C5A059]" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">
@@ -124,7 +129,7 @@ export default function ContactPage() {
             >
               <div className="flex items-start space-x-3.5">
                 <div className="w-10 h-10 rounded-xl bg-[#FDF2F2] text-[#9E1B22] flex items-center justify-center font-bold text-lg flex-shrink-0 group-hover:scale-105 transition-transform">
-                  🗑️
+                  <TrashIcon className="w-5 h-5 text-[#9E1B22]" />
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center justify-between">

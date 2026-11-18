@@ -148,16 +148,14 @@ export default function TableOfContents({ variant = "sidebar" }: TableOfContents
                   key={item.id}
                   href={`#${item.id}`}
                   onClick={(e) => scrollToSection(e, item.id)}
-                  className={`flex items-center py-2 px-3 rounded-lg text-xs transition-colors ${
-                    isActive
-                      ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold"
-                      : "text-[#4A453F] hover:bg-[#FAF7F2] hover:text-[#1A1816]"
-                  }`}
+                  className={`flex items-center py-2 px-3 rounded-lg text-xs transition-colors ${isActive
+                    ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold"
+                    : "text-[#4A453F] hover:bg-[#FAF7F2] hover:text-[#1A1816]"
+                    }`}
                 >
                   <span
-                    className={`w-6 flex-shrink-0 font-mono text-[11px] ${
-                      isActive ? "text-[#9E1B22] font-bold" : "text-[#B3A89F]"
-                    }`}
+                    className={`w-6 flex-shrink-0 font-mono text-[11px] ${isActive ? "text-[#9E1B22] font-bold" : "text-[#B3A89F]"
+                      }`}
                   >
                     {item.number.toString().padStart(2, "0")}
                   </span>
@@ -196,16 +194,14 @@ export default function TableOfContents({ variant = "sidebar" }: TableOfContents
               key={item.id}
               href={`#${item.id}`}
               onClick={(e) => scrollToSection(e, item.id)}
-              className={`group flex items-start py-1.5 px-2.5 rounded-lg text-xs leading-snug transition-all ${
-                isActive
-                  ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold border-l-2 border-[#9E1B22]"
-                  : "text-[#6B635B] hover:text-[#1A1816] hover:bg-[#FAF7F2]"
-              }`}
+              className={`group flex items-start py-1.5 px-2.5 rounded-lg text-xs leading-snug transition-all ${isActive
+                ? "bg-[#FDF2F2] text-[#9E1B22] font-semibold border-l-2 border-[#9E1B22]"
+                : "text-[#6B635B] hover:text-[#1A1816] hover:bg-[#FAF7F2]"
+                }`}
             >
               <span
-                className={`w-5 flex-shrink-0 font-mono text-[11px] ${
-                  isActive ? "text-[#9E1B22] font-bold" : "text-[#B3A89F]"
-                }`}
+                className={`w-5 flex-shrink-0 font-mono text-[11px] ${isActive ? "text-[#9E1B22] font-bold" : "text-[#B3A89F]"
+                  }`}
               >
                 {item.number.toString().padStart(2, "0")}
               </span>

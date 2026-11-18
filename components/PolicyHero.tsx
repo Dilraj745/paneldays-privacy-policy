@@ -1,4 +1,10 @@
 import React from "react";
+import {
+  SecurityShieldIcon,
+  SparklesIcon,
+  BanIcon,
+  LockClosedIcon,
+} from "@/components/Icons";
 
 export default function PolicyHero() {
   return (
@@ -65,7 +71,7 @@ export default function PolicyHero() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="p-4 rounded-xl bg-white/70 border border-[#E8DFD8] hover:border-[#9E1B22]/40 transition-colors">
             <div className="w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] flex items-center justify-center font-bold mb-3">
-              🛡️
+              <SecurityShieldIcon className="w-4 h-4 text-[#C5A059]" />
             </div>
             <h3 className="font-serif font-bold text-sm text-[#1A1816] mb-1">
               Local-First Content
@@ -77,7 +83,7 @@ export default function PolicyHero() {
 
           <div className="p-4 rounded-xl bg-white/70 border border-[#E8DFD8] hover:border-[#9E1B22]/40 transition-colors">
             <div className="w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] flex items-center justify-center font-bold mb-3">
-              ✨
+              <SparklesIcon className="w-4 h-4 text-[#C5A059]" />
             </div>
             <h3 className="font-serif font-bold text-sm text-[#1A1816] mb-1">
               Guest-First Freedom
@@ -89,7 +95,7 @@ export default function PolicyHero() {
 
           <div className="p-4 rounded-xl bg-white/70 border border-[#E8DFD8] hover:border-[#9E1B22]/40 transition-colors">
             <div className="w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] flex items-center justify-center font-bold mb-3">
-              🚫
+              <BanIcon className="w-4 h-4 text-[#C5A059]" />
             </div>
             <h3 className="font-serif font-bold text-sm text-[#1A1816] mb-1">
               Zero Ad Trackers
@@ -101,7 +107,7 @@ export default function PolicyHero() {
 
           <div className="p-4 rounded-xl bg-white/70 border border-[#E8DFD8] hover:border-[#9E1B22]/40 transition-colors">
             <div className="w-8 h-8 rounded-lg bg-[#FAF4E8] text-[#C5A059] flex items-center justify-center font-bold mb-3">
-              🔐
+              <LockClosedIcon className="w-4 h-4 text-[#C5A059]" />
             </div>
             <h3 className="font-serif font-bold text-sm text-[#1A1816] mb-1">
               Private Vault Security

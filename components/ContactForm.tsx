@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { CheckCircleIcon, EmailIcon, AlertTriangleIcon } from "@/components/Icons";
 
 export default function ContactForm() {
   const [fullName, setFullName] = useState("");
@@ -59,10 +60,8 @@ export default function ContactForm() {
       {isSubmitted && (
         <div className="mb-6 p-4 rounded-xl bg-[#FDF2F2] border border-[#F8D7DA] text-sm text-[#4A453F]">
           <div className="flex items-center text-[#9E1B22] font-bold mb-1">
-            <svg className="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Email Client Opened
+            <CheckCircleIcon className="w-5 h-5 mr-2 text-[#9E1B22] flex-shrink-0" />
+            <span>Email Client Opened</span>
           </div>
           <p className="m-0 leading-relaxed text-xs sm:text-sm">
             Your email client should have opened with your prefilled inquiry. Please click <strong>Send</strong> in your mail application to deliver it to <strong>paneldays@gmail.com</strong>. If your email client did not open automatically, you can email us directly at <a href="mailto:paneldays@gmail.com" className="text-[#9E1B22] font-semibold underline">paneldays@gmail.com</a>.
@@ -71,8 +70,9 @@ export default function ContactForm() {
       )}
 
       {errorMessage && (
-        <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-xs sm:text-sm text-red-700">
-          {errorMessage}
+        <div className="mb-6 p-3 rounded-lg bg-red-50 border border-red-200 text-xs sm:text-sm text-red-700 flex items-center">
+          <AlertTriangleIcon className="w-4 h-4 mr-1.5 flex-shrink-0 text-red-600" />
+          <span>{errorMessage}</span>
         </div>
       )}
 
@@ -167,9 +167,7 @@ export default function ContactForm() {
           type="submit"
           className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3 rounded-xl text-sm font-semibold text-white bg-[#9E1B22] hover:bg-[#8B1E22] shadow-sm hover:shadow transition-all focus:outline-none focus:ring-2 focus:ring-[#9E1B22] focus:ring-offset-2"
         >
-          <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-          </svg>
+          <EmailIcon className="w-4 h-4 mr-2 text-white" />
           Open in Email Client to Send &rarr;
         </button>
       </form>

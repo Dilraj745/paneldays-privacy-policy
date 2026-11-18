@@ -1,3 +1,4 @@
+
 # PanelDays — Official Privacy Policy Website
 
 **Production-Ready Privacy Documentation for the PanelDays Android Mobile Application**  
