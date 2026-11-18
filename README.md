@@ -117,16 +117,23 @@ D:\privacypolicy\
 
 5. **Create a New Repository on GitHub:**
    * Go to [github.com/new](https://github.com/new).
-   * Name your repository (e.g. `paneldays-privacy-policy` or `paneldays-legal`).
+   * Name your repository: `paneldays-privacy-policy`.
+   * Repository URL will be: `https://github.com/Dilraj745/paneldays-privacy-policy`
    * Choose **Public** (required so Google Play reviewers and users can access it).
    * Do **not** initialize with README, .gitignore, or license (these already exist in the project).
    * Click **Create repository**.
 
 6. **Link Remote and Push:**
-   ```powershell
-   git remote add origin https://github.com/YOUR_USERNAME/YOUR_REPOSITORY.git
-   git push -u origin main
-   ```
+   * If adding the remote fresh:
+     ```powershell
+     git remote add origin https://github.com/Dilraj745/paneldays-privacy-policy.git
+     git push -u origin main
+     ```
+   * Or if `origin` already exists (to update it):
+     ```powershell
+     git remote set-url origin https://github.com/Dilraj745/paneldays-privacy-policy.git
+     git push -u origin main
+     ```
 
 ---
 
