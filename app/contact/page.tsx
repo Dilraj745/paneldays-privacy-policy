@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
-import ContactForm from "@/components/ContactForm";
+import DirectContactAction from "@/components/DirectContactAction";
 import {
   EmailIcon,
   SecurityShieldIcon,
@@ -139,9 +139,9 @@ export default function ContactPage() {
             </div>
           </div>
 
-          {/* Form Column (Right) */}
+          {/* Direct Email Action Column (Right) */}
           <div className="lg:col-span-7">
-            <ContactForm />
+            <DirectContactAction />
           </div>
         </div>
       </main>

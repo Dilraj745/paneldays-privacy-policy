@@ -49,6 +49,14 @@ export default function Footer() {
               </li>
               <li>
                 <Link
+                  href="/terms"
+                  className="font-medium text-[#4A453F] hover:text-[#9E1B22] transition-colors"
+                >
+                  Terms of Service
+                </Link>
+              </li>
+              <li>
+                <Link
                   href="/account-deletion"
                   className="font-medium text-[#9E1B22] hover:underline flex items-center"
                 >
@@ -135,6 +143,8 @@ export default function Footer() {
           </div>
           <div className="flex items-center space-x-4">
             <Link href="/privacy-policy" className="hover:underline">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:underline">Terms of Service</Link>
             <span>•</span>
             <Link href="/account-deletion" className="hover:underline">Account Deletion</Link>
             <span>•</span>

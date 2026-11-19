@@ -81,8 +81,11 @@ export default function TableOfContents({ variant = "sidebar" }: TableOfContents
   // Scroll listener
   useEffect(() => {
     window.addEventListener("scroll", updateActiveSection, { passive: true });
-    updateActiveSection();
-    return () => window.removeEventListener("scroll", updateActiveSection);
+    const timer = setTimeout(updateActiveSection, 0);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("scroll", updateActiveSection);
+    };
   }, [updateActiveSection]);
 
   const scrollToSection = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {

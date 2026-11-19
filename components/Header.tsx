@@ -9,6 +9,7 @@ export default function Header() {
   const pathname = usePathname();
 
   const isPrivacy = pathname === "/privacy-policy" || pathname === "/";
+  const isTerms = pathname === "/terms";
   const isContact = pathname === "/contact";
 
   return (
@@ -49,6 +50,17 @@ export default function Header() {
               }`}
             >
               Privacy Policy
+            </Link>
+
+            <Link
+              href="/terms"
+              className={`text-sm font-semibold transition-colors pb-0.5 ${
+                isTerms
+                  ? "text-[#9E1B22] border-b-2 border-[#9E1B22]"
+                  : "text-[#4A453F] hover:text-[#1A1816]"
+              }`}
+            >
+              Terms of Service
             </Link>
 
             <Link
@@ -128,6 +140,17 @@ export default function Header() {
               }`}
             >
               Privacy Policy
+            </Link>
+            <Link
+              href="/terms"
+              onClick={() => setMobileMenuOpen(false)}
+              className={`block px-3 py-2.5 rounded-lg text-base font-semibold ${
+                isTerms
+                  ? "text-[#9E1B22] bg-[#FDF2F2]"
+                  : "text-[#2C2926] hover:bg-[#F5EFEB]"
+              }`}
+            >
+              Terms of Service
             </Link>
             <Link
               href="/privacy-policy#toc"
