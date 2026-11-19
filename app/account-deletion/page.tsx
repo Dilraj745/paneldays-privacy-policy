@@ -178,19 +178,19 @@ export default function AccountDeletionPage() {
 
               <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
                 <strong className="text-[#1A1816] block font-semibold mb-1">
-                  B. Remote Clerk Account Information
+                  B. Remote Clerk Authentication &amp; Identity Records
                 </strong>
                 <p className="text-xs text-[#554F49] leading-relaxed m-0">
-                  Remote Clerk user deletion during the in-app flow depends on the configured Clerk account-deletion capability (<code className="text-[#9E1B22] font-mono">deleteSelfEnabled</code>) successfully executing. When enabled in Clerk, your user record and credentials are deleted from Clerk&rsquo;s directory.
+                  When account deletion is executed (either in-app or via the verified external deletion tool below), your user identity, email, authentication tokens, and credentials are permanently purged from Clerk authentication directories. Once deleted, you cannot log back in with those credentials.
                 </p>
               </div>
 
               <div className="p-3.5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
                 <strong className="text-[#1A1816] block font-semibold mb-1">
-                  C. Associated Data Requiring Manual Processing
+                  C. External Web Deletion (Without Reinstalling)
                 </strong>
                 <p className="text-xs text-[#554F49] leading-relaxed m-0">
-                  Email requests submitted through the form below are manually verified and processed by the PanelDays team directly within our authentication and service registries.
+                  If you have already uninstalled the application, you do not need to reinstall it. Enter your registered email address in the deletion section below; a single-use 6-digit code will verify account ownership and execute deletion of your remote account.
                 </p>
               </div>
             </div>
@@ -263,7 +263,7 @@ export default function AccountDeletionPage() {
           </ul>
         </section>
 
-        {/* 2. Redesigned Email Request Section */}
+        {/* External Web Deletion Tool */}
         <section id="request-form">
           <AccountDeletionForm />
         </section>

@@ -42,6 +42,11 @@ D:\privacypolicy\
 ├── app/
 │   ├── account-deletion/
 │   │   └── page.tsx             # Dedicated Google Play Account Deletion page (/account-deletion)
+│   ├── api/
+│   │   ├── account-deletion/
+│   │   │   └── route.ts         # Secure API route for deletion requests (Resend + rate limiting)
+│   │   └── contact/
+│   │       └── route.ts         # Secure API route for contact inquiries (Resend + rate limiting)
 │   ├── contact/
 │   │   └── page.tsx             # Official Contact Us page (/contact)
 │   ├── globals.css              # Cream/Cherry-red/Gold palette, smooth scrolling, print styles
@@ -51,16 +56,21 @@ D:\privacypolicy\
 │   └── privacy-policy/
 │       └── page.tsx             # Primary canonical route (/privacy-policy)
 ├── components/
-│   ├── AccountDeletionForm.tsx  # Interactive web-based deletion request with mailto dispatch
-│   ├── ContactForm.tsx          # Multi-category contact form with prefilled mailto dispatch
+│   ├── AccountDeletionForm.tsx  # Direct server submission with Ref IDs & email fallback
+│   ├── ContactForm.tsx          # Multi-category direct server submission with Ref IDs & fallback
 │   ├── Footer.tsx               # Branding, email, links to Privacy Policy, Deletion, Contact
 │   ├── Header.tsx               # Responsive header, active route states, mobile navigation
+│   ├── Icons.tsx                # SVG icon components (Shield, Trash, Clock, Email, etc.)
 │   ├── PolicyHero.tsx           # Hero section, compliance badges, metadata, core guarantees
 │   ├── PrivacyPolicyContent.tsx # Authoritative legal documentation across all 19 sections
 │   └── TableOfContents.tsx      # Dual-mode desktop sidebar & mobile collapsible accordion TOC
+├── lib/
+│   ├── email-templates.ts       # Branded HTML & plain-text email layouts for Resend
+│   └── security.ts              # Rate limiting, input validation, honeypot & Ref ID generator
 ├── public/                      # Static assets and icons
+├── .env.example                 # Environment variables template for Resend
 ├── next.config.ts               # Next.js build and Turbopack configuration
-├── package.json                 # Project dependencies and build scripts
+├── package.json                 # Project dependencies (Next.js 16, React 19, Resend)
 ├── tsconfig.json                # TypeScript strict configuration
 └── README.md                    # Project documentation & deployment guide
 ```
@@ -158,7 +168,12 @@ D:\privacypolicy\
    * **Root Directory:** `./` (default).
    * **Build Command:** `next build` (default).
    * **Output Directory:** `.next` (default).
-   * **Environment Variables:** None required! (The privacy website contains zero secret keys).
+   * **Environment Variables (Optional for direct email sending via Resend):**
+     * `RESEND_API_KEY`: Your Resend API key (e.g. `re_...`) from [resend.com](https://resend.com).
+     * `CONTACT_FROM_EMAIL`: Sender address (default: `PanelDays Support <onboarding@resend.dev>` or your verified domain `support@paneldays.app`).
+     * `DELETION_FROM_EMAIL`: Deletion sender address (default: `PanelDays Deletion System <onboarding@resend.dev>`).
+     * `SUPPORT_RECIPIENT_EMAIL`: Recipient inbox (default: `paneldays@gmail.com`).
+     *(Note: If `RESEND_API_KEY` is not added immediately, the forms automatically provide a seamless one-click email client fallback, ensuring no user request is ever lost).*
 
 4. **Deploy:**
    * Click **Deploy**.

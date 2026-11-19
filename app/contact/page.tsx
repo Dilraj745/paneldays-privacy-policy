@@ -6,7 +6,6 @@ import ContactForm from "@/components/ContactForm";
 import {
   EmailIcon,
   SecurityShieldIcon,
-  TrashIcon,
 } from "@/components/Icons";
 
 export const metadata: Metadata = {
@@ -114,34 +113,6 @@ export default function ContactPage() {
                   </div>
                   <p className="text-xs text-[#6B635B] mt-1 mb-2 leading-relaxed">
                     Privacy concerns, data access rights, grievance redressal under DPDP/GDPR/CCPA.
-                  </p>
-                  <span className="inline-flex items-center text-xs font-semibold text-[#9E1B22] font-mono">
-                    paneldays@gmail.com
-                  </span>
-                </div>
-              </div>
-            </a>
-
-            {/* Card 3: Account Deletion Assistance */}
-            <a
-              href="mailto:paneldays@gmail.com?subject=%5BPanelDays%20Account%5D%20Account%20Deletion%20Assistance"
-              className="group block p-5 rounded-2xl bg-white border border-[#E8DFD8] hover:border-[#9E1B22]/40 shadow-sm hover:shadow transition-all text-decoration-none"
-            >
-              <div className="flex items-start space-x-3.5">
-                <div className="w-10 h-10 rounded-xl bg-[#FDF2F2] text-[#9E1B22] flex items-center justify-center font-bold text-lg flex-shrink-0 group-hover:scale-105 transition-transform">
-                  <TrashIcon className="w-5 h-5 text-[#9E1B22]" />
-                </div>
-                <div className="flex-1">
-                  <div className="flex items-center justify-between">
-                    <h3 className="font-serif font-bold text-base text-[#1A1816] group-hover:text-[#9E1B22] transition-colors m-0">
-                      Account Deletion Assistance
-                    </h3>
-                    <span className="text-xs text-[#9E1B22] font-semibold flex items-center">
-                      Email &rarr;
-                    </span>
-                  </div>
-                  <p className="text-xs text-[#6B635B] mt-1 mb-2 leading-relaxed">
-                    Assistance with permanently deleting your registered account and associated records.
                   </p>
                   <span className="inline-flex items-center text-xs font-semibold text-[#9E1B22] font-mono">
                     paneldays@gmail.com

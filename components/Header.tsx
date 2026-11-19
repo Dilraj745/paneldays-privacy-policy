@@ -9,7 +9,6 @@ export default function Header() {
   const pathname = usePathname();
 
   const isPrivacy = pathname === "/privacy-policy" || pathname === "/";
-  const isAccountDeletion = pathname === "/account-deletion";
   const isContact = pathname === "/contact";
 
   return (
@@ -57,17 +56,6 @@ export default function Header() {
               className="text-sm font-medium text-[#4A453F] hover:text-[#9E1B22] transition-colors"
             >
               Sections
-            </Link>
-
-            <Link
-              href="/account-deletion"
-              className={`text-sm font-semibold transition-colors pb-0.5 ${
-                isAccountDeletion
-                  ? "text-[#9E1B22] border-b-2 border-[#9E1B22]"
-                  : "text-[#4A453F] hover:text-[#1A1816]"
-              }`}
-            >
-              Account Deletion
             </Link>
 
             <Link
@@ -147,17 +135,6 @@ export default function Header() {
               className="block px-3 py-2.5 rounded-lg text-base font-medium text-[#2C2926] hover:bg-[#F5EFEB]"
             >
               Table of Contents (19 Sections)
-            </Link>
-            <Link
-              href="/account-deletion"
-              onClick={() => setMobileMenuOpen(false)}
-              className={`block px-3 py-2.5 rounded-lg text-base font-semibold ${
-                isAccountDeletion
-                  ? "text-[#9E1B22] bg-[#FDF2F2]"
-                  : "text-[#2C2926] hover:bg-[#F5EFEB]"
-              }`}
-            >
-              Account Deletion
             </Link>
             <Link
               href="/contact"

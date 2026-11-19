@@ -1,61 +1,182 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  EmailIcon,
   TrashIcon,
-  ClockTimeIcon,
-  CheckmarkIcon,
   CheckCircleIcon,
   AlertTriangleIcon,
+  ExternalLinkIcon,
   InfoIcon,
+  SecurityShieldIcon,
 } from "@/components/Icons";
 
+type DeletionStep = "request_code" | "verify_code" | "completed";
+
 export default function AccountDeletionForm() {
+  const [step, setStep] = useState<DeletionStep>("request_code");
   const [email, setEmail] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [reason, setReason] = useState("No longer using PanelDays");
-  const [confirmed, setConfirmed] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [emailTouched, setEmailTouched] = useState(false);
+  const [code, setCode] = useState("");
+  const [confirmationKeyword, setConfirmationKeyword] = useState("");
 
-  // Email format validation
-  const isEmailValid =
-    email.trim().length > 0 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim());
-  const showEmailError = emailTouched && !isEmailValid;
-  const isFormValid = isEmailValid && confirmed;
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [statusMessage, setStatusMessage] = useState<string | null>(null);
+  const [isUnconfigured, setIsUnconfigured] = useState(false);
+  const [referenceId, setReferenceId] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Resend cooldown timer
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => (prev > 0 ? prev - 1 : 0));
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  // Check backend configuration on mount
+  useEffect(() => {
+    fetch("/api/account-deletion")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data && data.clerkConfigured === false) {
+          setIsUnconfigured(true);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleRequestCode = async (e: React.FormEvent) => {
     e.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
 
-    if (!isFormValid) {
-      setEmailTouched(true);
+    if (!cleanEmail || !cleanEmail.includes("@")) {
+      setErrorMessage("Please enter a valid registered email address.");
       return;
     }
 
-    const emailSubject = encodeURIComponent(
-      "PanelDays — Permanent Account Deletion Request"
-    );
+    setErrorMessage(null);
+    setStatusMessage(null);
+    setIsLoading(true);
 
-    const emailBody = encodeURIComponent(
-      `PANELDAYS — PERMANENT ACCOUNT DELETION REQUEST\n` +
-      `===============================================\n\n` +
-      `Registered Email Address: ${email.trim()}\n` +
-      `Full Name: ${fullName.trim() || "Not provided"}\n` +
-      `Reason for Deletion: ${reason}\n` +
-      `Application: PanelDays (com.paneldays.app)\n` +
-      `Platform: Android / Google Play Store\n` +
-      `Date of Request: ${new Date().toISOString().split("T")[0]}\n\n` +
-      `EXPLICIT DELETION DECLARATION:\n` +
-      `I formally request the permanent deletion of my registered PanelDays user account and associated identity records from Clerk authentication directories.\n\n` +
-      `I understand that this request applies to my remote account record and that active Google Play recurring subscriptions must be cancelled separately through Google Play Store.\n`
-    );
+    try {
+      const response = await fetch("/api/account-deletion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "request_code",
+          email: cleanEmail,
+        }),
+      });
 
-    const mailtoUrl = `mailto:paneldays@gmail.com?subject=${emailSubject}&body=${emailBody}`;
+      const data = await response.json();
 
-    // Safely open the user's default email client
-    window.location.href = mailtoUrl;
-    setSubmitted(true);
+      if (response.ok && data.success) {
+        setStep("verify_code");
+        setStatusMessage(
+          data.message ||
+            "A 6-digit verification code has been dispatched to your email address."
+        );
+        setResendCooldown(60);
+      } else {
+        if (data.unconfigured) {
+          setIsUnconfigured(true);
+        }
+        setErrorMessage(
+          data.error ||
+            "Unable to send verification code. Please check your email or contact support."
+        );
+      }
+    } catch {
+      setErrorMessage(
+        "A network error occurred while communicating with the server. Please check your connection and try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleVerifyAndDelete = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanCode = code.trim();
+    const cleanKeyword = confirmationKeyword.trim();
+
+    if (!cleanCode || cleanCode.length !== 6) {
+      setErrorMessage("Please enter the 6-digit verification code.");
+      return;
+    }
+
+    if (cleanKeyword !== "DELETE") {
+      setErrorMessage("Please type DELETE exactly to confirm permanent account deletion.");
+      return;
+    }
+
+    setErrorMessage(null);
+    setStatusMessage(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/account-deletion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "verify_and_delete",
+          email: cleanEmail,
+          code: cleanCode,
+          confirmationKeyword: cleanKeyword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        setStep("completed");
+        setReferenceId(data.referenceId || "DEL-" + Date.now().toString(36).toUpperCase());
+      } else {
+        setErrorMessage(
+          data.error ||
+            "Failed to delete your account from the authentication server. Please check your code or try again."
+        );
+      }
+    } catch {
+      setErrorMessage(
+        "A network error occurred during account deletion. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleResendCode = async () => {
+    if (resendCooldown > 0 || isLoading) return;
+    setErrorMessage(null);
+    setStatusMessage(null);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch("/api/account-deletion", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "request_code",
+          email: email.trim().toLowerCase(),
+        }),
+      });
+
+      const data = await response.json();
+      if (response.ok && data.success) {
+        setStatusMessage("A fresh verification code has been dispatched to your email.");
+        setResendCooldown(60);
+      } else {
+        setErrorMessage(data.error || "Failed to resend verification code.");
+      }
+    } catch {
+      setErrorMessage("Network error resending code. Please try again.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -63,183 +184,269 @@ export default function AccountDeletionForm() {
       {/* Header */}
       <div className="border-b border-[#E8DFD8] pb-6 mb-6">
         <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full text-xs font-semibold bg-[#FDF2F2] text-[#9E1B22] border border-[#F8D7DA] mb-3">
-          <TrashIcon className="w-3.5 h-3.5 text-[#9E1B22]" />
-          <span>Support Assisted Deletion</span>
+          <SecurityShieldIcon className="w-3.5 h-3.5 text-[#9E1B22]" />
+          <span>External Account Deletion</span>
         </div>
         <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#1A1816]">
-          Request Account Deletion
+          Delete PanelDays Account
         </h2>
         <p className="text-sm text-[#4A453F] mt-2 leading-relaxed">
-          Unable to access the PanelDays application? You can still request permanent deletion of your registered account and associated data through our support team.
+          If you have uninstalled the PanelDays application, you can initiate permanent remote deletion of your Clerk user account and authentication credentials using this verified form.
         </p>
       </div>
 
-      {/* A. HOW IT WORKS */}
-      <div className="mb-8 p-5 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
-        <div className="flex items-center space-x-2 text-xs font-bold uppercase tracking-wider text-[#1A1816] mb-3">
-          <InfoIcon className="w-4 h-4 text-[#9E1B22]" />
-          <span>How It Works</span>
-        </div>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs sm:text-sm text-[#4A453F]">
-          <div className="flex items-start space-x-2.5">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white border border-[#E8DFD8] text-[#9E1B22] font-mono font-bold flex items-center justify-center text-xs shadow-2xs">
-              1
-            </span>
-            <span className="leading-snug pt-0.5">
-              Enter your registered PanelDays email address below.
-            </span>
+      {/* Backend Unconfigured Notice */}
+      {isUnconfigured && step !== "completed" && (
+        <div className="mb-6 p-4 rounded-xl bg-[#FFF8E7] border border-[#FFE082] text-xs sm:text-sm text-[#8A5D00] flex items-start space-x-3">
+          <AlertTriangleIcon className="w-5 h-5 text-[#B8860B] flex-shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <strong className="block font-semibold">
+              Notice Regarding Automated Clerk Deletion:
+            </strong>
+            <p className="m-0 leading-relaxed text-[#7A5200]">
+              The automated Clerk deletion backend requires server-side configuration (<code className="font-mono text-xs bg-white/70 px-1 py-0.5 rounded">CLERK_SECRET_KEY</code>). If your request cannot be executed automatically, our privacy team promptly handles manual deletion requests sent to{" "}
+              <a
+                href="mailto:paneldays@gmail.com?subject=PanelDays%20Account%20Deletion%20Request"
+                className="font-bold underline text-[#9E1B22]"
+              >
+                paneldays@gmail.com
+              </a>.
+            </p>
           </div>
-          <div className="flex items-start space-x-2.5">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white border border-[#E8DFD8] text-[#9E1B22] font-mono font-bold flex items-center justify-center text-xs shadow-2xs">
-              2
-            </span>
-            <span className="leading-snug pt-0.5">
-              Click &ldquo;Prepare Deletion Request Email&rdquo; to generate your request.
-            </span>
-          </div>
-          <div className="flex items-start space-x-2.5">
-            <span className="flex-shrink-0 w-6 h-6 rounded-full bg-white border border-[#E8DFD8] text-[#9E1B22] font-mono font-bold flex items-center justify-center text-xs shadow-2xs">
-              3
-            </span>
-            <span className="leading-snug pt-0.5">
-              Open your email application, review the generated request, and press <strong>Send</strong>.
-            </span>
-          </div>
-        </div>
-        <p className="text-[11px] text-[#6B635B] mt-3.5 mb-0 pt-3 border-t border-[#E8DFD8]/80 leading-relaxed">
-          <strong>Please Note:</strong> Clicking the button opens your device&rsquo;s email client with your prefilled details. Opening the email application does not submit the request automatically; you must press <strong>Send</strong> in your mail application to deliver your request to us.
-        </p>
-      </div>
-
-      {/* Post-submission Notification */}
-      {submitted && (
-        <div className="mb-6 p-4 rounded-xl bg-[#FDF2F2] border border-[#F8D7DA] text-sm text-[#4A453F]">
-          <div className="flex items-center text-[#9E1B22] font-bold text-sm mb-1.5">
-            <CheckCircleIcon className="w-5 h-5 mr-2 text-[#9E1B22] flex-shrink-0" />
-            <span>Email Client Opened with Your Request</span>
-          </div>
-          <p className="m-0 leading-relaxed text-xs sm:text-sm">
-            Your email application has been opened with your deletion request. Please review and send the email to{" "}
-            <a href="mailto:paneldays@gmail.com" className="font-semibold text-[#9E1B22] underline">
-              paneldays@gmail.com
-            </a>{" "}
-            to submit your request.
-          </p>
         </div>
       )}
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} noValidate className="space-y-5">
-        {/* Email Field */}
-        <div>
-          <label htmlFor="delEmail" className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5">
-            Registered Email Address <span className="text-[#9E1B22]">*</span>
-          </label>
-          <div className="relative">
+      {/* STEP 1: REQUEST VERIFICATION CODE */}
+      {step === "request_code" && (
+        <form onSubmit={handleRequestCode} className="space-y-5">
+          <div>
+            <label
+              htmlFor="deletion-email"
+              className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5"
+            >
+              Registered Email Address <span className="text-[#9E1B22]">*</span>
+            </label>
             <input
+              id="deletion-email"
               type="email"
-              id="delEmail"
               required
               value={email}
-              onBlur={() => setEmailTouched(true)}
+              disabled={isLoading}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="The email you used to register on PanelDays"
-              aria-invalid={showEmailError}
-              aria-describedby={showEmailError ? "email-error" : undefined}
-              className={`w-full px-3.5 py-2.5 rounded-lg border text-[#1A1816] text-sm placeholder:text-[#A89F95] transition-colors focus:bg-white focus:outline-none focus:ring-2 ${
-                showEmailError
-                  ? "border-red-400 bg-red-50/40 focus:ring-red-400/30 focus:border-red-500"
-                  : "border-[#E8DFD8] bg-[#FAF7F2] focus:ring-[#9E1B22]/30 focus:border-[#9E1B22]"
-              }`}
+              placeholder="e.g. you@example.com"
+              className="w-full px-4 py-2.5 rounded-lg border border-[#E8DFD8] bg-[#FAF7F2] text-[#1A1816] text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 focus:border-[#9E1B22] transition-colors disabled:opacity-60"
             />
-          </div>
-          {showEmailError && (
-            <p id="email-error" className="mt-1.5 text-xs text-red-600 flex items-center">
-              <AlertTriangleIcon className="w-3.5 h-3.5 mr-1 flex-shrink-0" />
-              Please enter a valid email address (e.g., name@example.com).
+            <p className="text-xs text-[#6B635B] mt-1.5 leading-relaxed">
+              Enter the exact email address associated with your PanelDays account. We will send a single-use verification code to verify ownership before deleting the account.
             </p>
+          </div>
+
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-[#FDF2F2] border border-[#F8D7DA] text-xs text-[#9E1B22] flex items-start space-x-2">
+              <AlertTriangleIcon className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#9E1B22]" />
+              <span>{errorMessage}</span>
+            </div>
           )}
-        </div>
 
-        {/* Full Name Field */}
-        <div>
-          <label htmlFor="delName" className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5">
-            Full Name (Optional)
-          </label>
-          <input
-            type="text"
-            id="delName"
-            value={fullName}
-            onChange={(e) => setFullName(e.target.value)}
-            placeholder="Account display name, if applicable"
-            className="w-full px-3.5 py-2.5 rounded-lg border border-[#E8DFD8] bg-[#FAF7F2] text-[#1A1816] text-sm placeholder:text-[#A89F95] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 focus:border-[#9E1B22]"
-          />
-        </div>
+          <div className="pt-2">
+            <button
+              type="submit"
+              disabled={isLoading || !email.trim()}
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg font-semibold text-sm text-white bg-[#9E1B22] hover:bg-[#8B1E22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center justify-center space-x-2"
+            >
+              {isLoading ? (
+                <>
+                  <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  <span>Sending Verification Code...</span>
+                </>
+              ) : (
+                <span>Send Verification Code</span>
+              )}
+            </button>
+          </div>
+        </form>
+      )}
 
-        {/* Reason for Deletion */}
-        <div>
-          <label htmlFor="delReason" className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5">
-            Reason for Deletion (Optional)
-          </label>
-          <select
-            id="delReason"
-            value={reason}
-            onChange={(e) => setReason(e.target.value)}
-            className="w-full px-3.5 py-2.5 rounded-lg border border-[#E8DFD8] bg-[#FAF7F2] text-[#1A1816] text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 focus:border-[#9E1B22]"
-          >
-            <option value="No longer using PanelDays">No longer using PanelDays</option>
-            <option value="Privacy concerns">Privacy concerns</option>
-            <option value="Switching devices">Switching devices</option>
-            <option value="Temporary account cleanup">Temporary account cleanup</option>
-            <option value="Other">Other</option>
-          </select>
-        </div>
+      {/* STEP 2: VERIFY CODE & CONFIRM DELETION */}
+      {step === "verify_code" && (
+        <form onSubmit={handleVerifyAndDelete} className="space-y-5">
+          <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8] flex items-center justify-between text-xs text-[#4A453F]">
+            <div>
+              <span className="text-[#6B635B] block">Verification code sent to:</span>
+              <strong className="text-sm text-[#1A1816] font-mono">{email}</strong>
+            </div>
+            <button
+              type="button"
+              onClick={() => {
+                setStep("request_code");
+                setCode("");
+                setConfirmationKeyword("");
+                setErrorMessage(null);
+              }}
+              className="text-[#9E1B22] font-semibold hover:underline"
+            >
+              Change Email
+            </button>
+          </div>
 
-        {/* Required Confirmation Checkbox */}
-        <div className="p-4 rounded-xl bg-[#FAF7F2] border border-[#E8DFD8]">
-          <label className="flex items-start space-x-3 cursor-pointer">
+          {statusMessage && (
+            <div className="p-3.5 rounded-xl bg-[#E8F5E9] border border-[#C8E6C9] text-xs text-[#2E7D32] flex items-start space-x-2">
+              <CheckCircleIcon className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#2E7D32]" />
+              <span>{statusMessage}</span>
+            </div>
+          )}
+
+          <div>
+            <label
+              htmlFor="verification-code"
+              className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5"
+            >
+              6-Digit Verification Code <span className="text-[#9E1B22]">*</span>
+            </label>
             <input
-              type="checkbox"
-              id="confirmCheckbox"
+              id="verification-code"
+              type="text"
               required
-              checked={confirmed}
-              onChange={(e) => setConfirmed(e.target.checked)}
-              className="mt-1 h-4 w-4 rounded border-[#D9CEC5] text-[#9E1B22] focus:ring-[#9E1B22] cursor-pointer"
+              maxLength={6}
+              value={code}
+              disabled={isLoading}
+              onChange={(e) => setCode(e.target.value.replace(/\D/g, ""))}
+              placeholder="123456"
+              className="w-full max-w-xs font-mono text-lg tracking-widest text-center px-4 py-2.5 rounded-lg border border-[#E8DFD8] bg-[#FAF7F2] text-[#1A1816] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 focus:border-[#9E1B22]"
             />
-            <span className="text-xs text-[#4A453F] leading-relaxed select-none">
-              I understand that account deletion is permanent and irreversible. I understand that submitting this email request does not immediately delete my account, and that active Google Play subscriptions must be cancelled separately. <span className="text-[#9E1B22] font-semibold">*</span>
-            </span>
-          </label>
-        </div>
+            <div className="mt-2 flex items-center space-x-3 text-xs text-[#6B635B]">
+              <span>Didn&rsquo;t receive code?</span>
+              <button
+                type="button"
+                onClick={handleResendCode}
+                disabled={resendCooldown > 0 || isLoading}
+                className="text-[#9E1B22] font-semibold hover:underline disabled:opacity-50 disabled:no-underline"
+              >
+                {resendCooldown > 0 ? `Resend code in ${resendCooldown}s` : "Resend Code"}
+              </button>
+            </div>
+          </div>
 
-        {/* 3. VISUALLY PROMINENT PROCESSING COMMITMENT */}
-        <div className="p-4 rounded-xl bg-gradient-to-r from-[#FAF4E8] to-[#FAF7F2] border border-[#E8DFD8] flex items-start space-x-3">
-          <ClockTimeIcon className="w-5 h-5 text-[#C5A059] flex-shrink-0 mt-0.5" />
-          <div className="text-xs sm:text-sm text-[#4A453F] leading-relaxed">
-            <strong className="text-[#1A1816] font-semibold block mb-0.5 font-serif">
-              Our Processing Commitment
-            </strong>
-            &ldquo;Our team commits to verifying account ownership and completing eligible account deletion requests within 30 calendar days of receiving the request.&rdquo;
+          <div>
+            <label
+              htmlFor="confirmation-keyword"
+              className="block text-xs font-bold uppercase tracking-wider text-[#4A453F] mb-1.5"
+            >
+              Type <span className="font-mono text-[#9E1B22]">DELETE</span> to Confirm <span className="text-[#9E1B22]">*</span>
+            </label>
+            <input
+              id="confirmation-keyword"
+              type="text"
+              required
+              value={confirmationKeyword}
+              disabled={isLoading}
+              onChange={(e) => setConfirmationKeyword(e.target.value)}
+              placeholder="DELETE"
+              className="w-full max-w-xs font-mono px-4 py-2.5 rounded-lg border border-[#E8DFD8] bg-[#FAF7F2] text-[#1A1816] text-sm focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9E1B22]/30 focus:border-[#9E1B22]"
+            />
+            <p className="text-xs text-[#8C827A] mt-1">
+              This action is permanent and cannot be undone. All Clerk authentication records will be erased.
+            </p>
+          </div>
+
+          {errorMessage && (
+            <div className="p-3.5 rounded-xl bg-[#FDF2F2] border border-[#F8D7DA] text-xs text-[#9E1B22] flex items-start space-x-2">
+              <AlertTriangleIcon className="w-4 h-4 flex-shrink-0 mt-0.5 text-[#9E1B22]" />
+              <span>{errorMessage}</span>
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center gap-3 pt-2">
+            <button
+              type="submit"
+              disabled={
+                isLoading ||
+                code.length !== 6 ||
+                confirmationKeyword.trim() !== "DELETE"
+              }
+              className="px-6 py-2.5 rounded-lg font-semibold text-sm text-white bg-[#9E1B22] hover:bg-[#8B1E22] transition-colors disabled:opacity-50 disabled:cursor-not-allowed shadow-sm flex items-center space-x-2"
+            >
+              <TrashIcon className="w-4 h-4 text-white" />
+              <span>{isLoading ? "Deleting Account..." : "Permanently Delete My Account"}</span>
+            </button>
+            <button
+              type="button"
+              disabled={isLoading}
+              onClick={() => {
+                setStep("request_code");
+                setCode("");
+                setConfirmationKeyword("");
+                setErrorMessage(null);
+              }}
+              className="px-4 py-2.5 rounded-lg font-medium text-sm text-[#4A453F] hover:bg-[#F5EFEB] transition-colors"
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      )}
+
+      {/* STEP 3: COMPLETED CONFIRMATION */}
+      {step === "completed" && (
+        <div className="space-y-6">
+          <div className="p-6 rounded-2xl bg-[#F0FDF4] border border-[#BBF7D0] text-[#166534]">
+            <div className="flex items-center space-x-3 mb-2">
+              <CheckCircleIcon className="w-6 h-6 text-[#16A34A]" />
+              <h3 className="font-serif text-xl font-bold text-[#14532D]">
+                Account Successfully Deleted
+              </h3>
+            </div>
+            <p className="text-sm text-[#166534] leading-relaxed">
+              Your registered user record and all associated authentication credentials have been permanently deleted from Clerk directories.
+            </p>
+            {referenceId && (
+              <div className="mt-3 text-xs font-mono text-[#14532D] bg-white/70 px-3 py-1.5 rounded-md inline-block border border-[#BBF7D0]">
+                Reference ID: {referenceId}
+              </div>
+            )}
+          </div>
+
+          <div className="p-4 rounded-xl bg-[#FFF8E7] border border-[#FFE082] text-xs text-[#8A5D00] space-y-2">
+            <div className="flex items-center space-x-2 font-semibold">
+              <AlertTriangleIcon className="w-4 h-4 text-[#B8860B]" />
+              <span>Google Play Subscription Reminder</span>
+            </div>
+            <p className="m-0 leading-relaxed">
+              If you had an active recurring subscription to PanelDays Premium, please ensure you cancel it directly through Google Play Store. Account deletion does not automatically cancel Google Play subscriptions.
+            </p>
+            <div className="pt-1">
+              <a
+                href="https://play.google.com/store/account/subscriptions"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center text-xs font-bold text-[#9E1B22] hover:underline"
+              >
+                <span>Open Google Play Subscriptions</span>
+                <ExternalLinkIcon className="w-3.5 h-3.5 ml-1" />
+              </a>
+            </div>
+          </div>
+
+          <div className="pt-2">
+            <button
+              type="button"
+              onClick={() => {
+                setStep("request_code");
+                setEmail("");
+                setCode("");
+                setConfirmationKeyword("");
+                setReferenceId(null);
+              }}
+              className="text-xs font-medium text-[#6B635B] hover:text-[#1A1816] underline"
+            >
+              Start another request &rarr;
+            </button>
           </div>
         </div>
-
-        {/* Submit Button (disabled until email and confirmation are valid) */}
-        <div>
-          <button
-            type="submit"
-            disabled={!isFormValid}
-            className="w-full sm:w-auto inline-flex items-center justify-center px-7 py-3.5 rounded-xl text-sm font-semibold text-white bg-[#9E1B22] hover:bg-[#8B1E22] shadow-sm hover:shadow transition-all focus:outline-none focus:ring-2 focus:ring-[#9E1B22] focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-[#9E1B22] disabled:shadow-none"
-          >
-            <EmailIcon className="w-4 h-4 mr-2 text-white" />
-            Prepare Deletion Request Email &rarr;
-          </button>
-          {!isFormValid && (
-            <p className="text-[11px] text-[#8C827A] mt-2">
-              Please enter a valid registered email address and check the confirmation box above to enable this button.
-            </p>
-          )}
-        </div>
-      </form>
+      )}
     </div>
   );
 }
